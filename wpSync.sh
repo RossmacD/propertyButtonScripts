@@ -18,12 +18,23 @@ ColorBlue(){
 	echo -ne $blue$1$clear
 }
 
-# Menu Functions
+# Variables
+prodPath=/var/www/html
+prodUrl=https://test.webspace.ie
+stagePath=/var/www/html
+stageUrl=https://test.webspace.ie/
 
+#Menu Functions
 function prodToStaging(){
 	echo "Prod to staging selected"
-	cd /var/www/html
+	echo "Copying Database from ${prodPath}"
+	cd $prodPath
 	wp db export ~/wpTemp/production.sql
+	echo "Importing Database Into ${stagePath}"
+	cd $stagePath
+	wp db import ~/wpTemp/production.sql
+	echo "Replacing ${prodUrl} with ${stageUrl}"
+	wp search-replace $prodUrl $stageUrl
 	cd ~/scripts
 	exit
 }
